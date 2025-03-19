@@ -2,6 +2,7 @@ package com.ecom.ecommerce.category;
 
 import com.ecom.ecommerce.model.Product;
 import com.ecom.ecommerce.payload.ProductDTO;
+import com.ecom.ecommerce.payload.ProductResponse;
 import com.ecom.ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,10 @@ public class ProductController {
         return new ResponseEntity<>(productDTO, HttpStatus.CREATED);
     }
 
-
+    @GetMapping("/public/products")
+    public ResponseEntity<ProductResponse> getAllProducts() {
+        ProductResponse productResponse = productService.getAllProducts();
+        return new ResponseEntity<>(productResponse, HttpStatus.OK);
+    }
 
 }
