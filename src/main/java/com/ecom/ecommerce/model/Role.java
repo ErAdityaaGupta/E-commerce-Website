@@ -1,5 +1,6 @@
 package com.ecom.ecommerce.model;
 
+import jakarta.annotation.Resource;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,8 +14,8 @@ import lombok.ToString;
 @Table(name = "roles")
 public class Role {
 
-    public Role(AppRole rollName) {
-        this.rollName = rollName;
+    public Role(AppRole roleName) {
+        this.roleName = roleName;
     }
 
     @Id
@@ -25,6 +26,9 @@ public class Role {
     @ToString.Exclude
     @Enumerated(EnumType.STRING)
     @Column(length = 20, name = "role_name")
-    private AppRole rollName;
+    private AppRole roleName;
 
+//    public Resource getRoleName() {
+//        return null;
+//    }
 }
