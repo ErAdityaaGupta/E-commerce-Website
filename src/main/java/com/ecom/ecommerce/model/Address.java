@@ -46,14 +46,14 @@ public class Address {
     @Size(min = 6, message = "pin code must be atLeast 6 characters")
     private String pinCode;
 
-    @ToString.Exclude
-    @ManyToMany(mappedBy = "addresses")
-    private List<User> users = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    public Address(String street, List<User> users, String buildingName, String city,
+    public Address(String street, User user, String buildingName, String city,
                    String state, String country, String pinCode) {
         this.street = street;
-        this.users = users;
+        this.user = user;
         this.buildingName = buildingName;
         this.city = city;
         this.state = state;
