@@ -1,4 +1,4 @@
-package com.ecom.ecommerce.category;
+package com.ecom.ecommerce.controller;
 
 import com.ecom.ecommerce.model.Cart;
 import com.ecom.ecommerce.payload.CartDTO;
@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController

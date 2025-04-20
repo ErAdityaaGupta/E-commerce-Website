@@ -9,8 +9,8 @@ import com.ecom.ecommerce.payload.CartDTO;
 import com.ecom.ecommerce.payload.ProductDTO;
 import com.ecom.ecommerce.payload.ProductResponse;
 import com.ecom.ecommerce.repo.CartRepository;
-import com.ecom.ecommerce.repo.CategoryRepo;
-import com.ecom.ecommerce.repo.ProductRepo;
+import com.ecom.ecommerce.repo.CategoryRepository;
+import com.ecom.ecommerce.repo.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,16 +23,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
     @Autowired
-    private ProductRepo productRepo;
+    private ProductRepository productRepository;
 
     @Autowired
-    private CategoryRepo categoryRepo;
+    private CategoryRepository categoryRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -51,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO addProduct(Long categoryId, ProductDTO productDTO) {
-        Category category = categoryRepo.findById(categoryId)
+        Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category","categoryId",categoryId));
 
         boolean isProductNotPresent = true;
@@ -73,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
 
             product.setSpecialPrice(specialPrice);
 
-            Product savedProduct = productRepo.save(product);
+            Product savedProduct = productRepository.save(product);
 
             return modelMapper.map(savedProduct, ProductDTO.class);
         }else {
@@ -89,7 +88,7 @@ public class ProductServiceImpl implements ProductService {
                 : Sort.by(sortBy).descending();
 
         Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
-        Page<Product> pageProducts = productRepo.findAll(pageDetails);
+        Page<Product> pageProducts = productRepository.findAll(pageDetails);
 
 //        List<Product> products = productRepo.findAll();
         List<Product> products = pageProducts.getContent();
@@ -113,7 +112,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponse searchByCategory(Long categoryId, Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
-        Category category = categoryRepo.findById(categoryId)
+        Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category","categoryId",categoryId));
 
         Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
@@ -121,7 +120,7 @@ public class ProductServiceImpl implements ProductService {
                 : Sort.by(sortBy).descending();
 
         Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
-        Page<Product> pageProducts = productRepo.findByCategoryOrderByPriceAsc(category,pageDetails);
+        Page<Product> pageProducts = productRepository.findByCategoryOrderByPriceAsc(category,pageDetails);
 
         List<Product> products = pageProducts.getContent();
 
@@ -148,7 +147,7 @@ public class ProductServiceImpl implements ProductService {
                 : Sort.by(sortBy).descending();
 
         Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
-        Page<Product> pageProducts = productRepo.findByProductNameLikeIgnoreCase("%"+keyword+"%",pageDetails);
+        Page<Product> pageProducts = productRepository.findByProductNameLikeIgnoreCase("%"+keyword+"%",pageDetails);
 
         List<Product> products = pageProducts.getContent();
 
@@ -174,7 +173,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDTO updateProduct(ProductDTO productDTO, Long productId) {
 
-        Product productFromDb = productRepo.findById(productId)
+        Product productFromDb = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product","productId",productId));
 
         Product product = modelMapper.map(productDTO, Product.class);
@@ -186,7 +185,7 @@ public class ProductServiceImpl implements ProductService {
         productFromDb.setQuantity(product.getQuantity());
         productFromDb.setSpecialPrice(product.getSpecialPrice());
 
-        Product savedProduct = productRepo.save(productFromDb);
+        Product savedProduct = productRepository.save(productFromDb);
 
         List<Cart> carts = cartRepository.findCartsByProductId(productId);
 
@@ -208,26 +207,26 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDTO deleteProduct(Long productId) {
 
-        Product productFromDb = productRepo.findById(productId)
+        Product productFromDb = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product","productId",productId));
 
         List<Cart> carts = cartRepository.findCartsByProductId(productId);
         carts.forEach(cart -> cartService.deleteProductFromCart(cart.getCartId(), productId));
 
-        productRepo.delete(productFromDb);
+        productRepository.delete(productFromDb);
         return modelMapper.map(productFromDb, ProductDTO.class);
     }
 
     @Override
     public ProductDTO updateProductImage(Long productId, MultipartFile image) throws IOException {
-        Product productFromDb = productRepo.findById(productId)
+        Product productFromDb = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product","productId",productId));
 
         String fileName = fileService.uploadImage(path, image);
 
         productFromDb.setImage(fileName);
 
-        Product savedProduct = productRepo.save(productFromDb);
+        Product savedProduct = productRepository.save(productFromDb);
 
         return modelMapper.map(savedProduct, ProductDTO.class);
     }

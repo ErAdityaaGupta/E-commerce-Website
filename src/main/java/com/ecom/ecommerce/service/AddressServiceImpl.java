@@ -1,7 +1,5 @@
 package com.ecom.ecommerce.service;
 
-import com.ecom.ecommerce.category.AddressController;
-import com.ecom.ecommerce.exception.APIExceptions;
 import com.ecom.ecommerce.exception.ResourceNotFoundException;
 import com.ecom.ecommerce.model.Address;
 import com.ecom.ecommerce.model.User;
@@ -13,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AddressServiceImpl implements AddressService {

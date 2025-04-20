@@ -1,7 +1,6 @@
-package com.ecom.ecommerce.category;
+package com.ecom.ecommerce.controller;
 
 import com.ecom.ecommerce.config.AppConstants;
-import com.ecom.ecommerce.model.Product;
 import com.ecom.ecommerce.payload.ProductDTO;
 import com.ecom.ecommerce.payload.ProductResponse;
 import com.ecom.ecommerce.service.ProductService;

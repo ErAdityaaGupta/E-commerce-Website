@@ -1,4 +1,4 @@
-package com.ecom.ecommerce.category;
+package com.ecom.ecommerce.controller;
 
 import com.ecom.ecommerce.model.User;
 import com.ecom.ecommerce.payload.AddressDTO;

@@ -1,4 +1,4 @@
-package com.ecom.ecommerce.category;
+package com.ecom.ecommerce.controller;
 
 import com.ecom.ecommerce.model.AppRole;
 import com.ecom.ecommerce.model.Role;
@@ -11,7 +11,6 @@ import com.ecom.ecommerce.security.request.SignupRequest;
 import com.ecom.ecommerce.security.response.MessageResponse;
 import com.ecom.ecommerce.security.response.UserInfoResponse;
 import com.ecom.ecommerce.security.services.UserDetailsImpl;
-import com.ecom.ecommerce.security.services.UserDetailsServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;

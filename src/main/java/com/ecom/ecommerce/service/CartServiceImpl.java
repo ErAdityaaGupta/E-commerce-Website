@@ -9,12 +9,11 @@ import com.ecom.ecommerce.payload.CartDTO;
 import com.ecom.ecommerce.payload.ProductDTO;
 import com.ecom.ecommerce.repo.CartItemRepository;
 import com.ecom.ecommerce.repo.CartRepository;
-import com.ecom.ecommerce.repo.ProductRepo;
+import com.ecom.ecommerce.repo.ProductRepository;
 import com.ecom.ecommerce.util.AuthUtil;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,13 +33,13 @@ public class CartServiceImpl implements CartService {
     private CartItemRepository cartItemRepository;
 
     @Autowired
-    private ProductRepo ProductRepository;
+    private ProductRepository ProductRepository;
 
     @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
-    private ProductRepo productRepo;
+    private ProductRepository productRepository;
 
     @Override
     public CartDTO addProductToCart(Long productId, Integer quantity) {
@@ -121,8 +120,11 @@ public class CartServiceImpl implements CartService {
         List<CartDTO> cartDTOS = (List<CartDTO>) carts.stream().map(cart -> {
             CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
 
-            List<ProductDTO> products = cart.getCartItems().stream().map(p ->
-                    modelMapper.map(p.getProduct(), ProductDTO.class) ).collect(Collectors.toList());
+            List<ProductDTO> products = cart.getCartItems().stream().map(cartItem ->{
+                ProductDTO productDTO = modelMapper.map(cartItem.getProduct(), ProductDTO.class);
+                productDTO.setQuantity(cartItem.getQuantity());
+                return productDTO;
+            }).collect(Collectors.toList());
 
             cartDTO.setProducts(products);
 
@@ -164,7 +166,7 @@ public class CartServiceImpl implements CartService {
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart","CartId",cartId));
 
-        Product product = productRepo.findById(productId)
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product","ProductId",productId));
 
         if(product.getQuantity() == 0) {
@@ -250,7 +252,7 @@ public class CartServiceImpl implements CartService {
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart", "cartId", cartId));
 
-        Product product = productRepo.findById(productId)
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
 
         CartItem cartItem = cartItemRepository.findCartItemByProductIdAndCartId(cartId, productId);
